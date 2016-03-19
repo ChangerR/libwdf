@@ -1,0 +1,214 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 中文(中华人民共和国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)\r\n"
+    "LANGUAGE 4, 2\r\n"
+    "#pragma code_page(936)\r\n"
+    "#include ""res\\maptool.rc2""  // 非 Microsoft Visual C++ 编辑的资源\r\n"
+    "#include ""afxres.rc""     // 标准组件\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\maptool.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 185, 140
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "关于MAP工具"
+FONT 9, "宋体", 0, 0, 0x1
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,82,12,20,20
+    CTEXT           "MAP工具v1.3 大理专用版",IDC_STATIC,7,40,171,8,SS_NOPREFIX
+    CTEXT           "版权所有 (C) 2010,　王大理,　保留所有权利.",IDC_STATIC,7,104,171,8
+    DEFPUSHBUTTON   "确定",IDOK,68,117,50,16,WS_GROUP
+    CTEXT           "QQ：DaliStudio@QQ.com",IDC_STATIC,7,70,171,9
+    CTEXT           "WebSite: http://DaliStudio.net",IDC_STATIC,7,83,171,8
+    CTEXT           "Use Cloud Wu's JPEG Libary",IDC_STATIC,7,50,171,8
+END
+
+IDD_MAPTOOL_DIALOG DIALOGEX 0, 0, 347, 149
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "MAP工具 v1.3"
+FONT 9, "宋体", 0, 0, 0x1
+BEGIN
+    CTEXT           "版权所有 (c) 2003-2010, 王大理, 保留所有权利。",IDC_STATIC,7,134,333,8
+    LTEXT           "游戏安装目录：",IDC_STATIC,7,19,57,8
+    LTEXT           "输出文件目录：",IDC_STATIC,7,42,57,8
+    EDITTEXT        IDC_GAME_PATH,65,17,225,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_FILE_PATH,65,39,225,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "浏览...",IDC_GAME_BROWSE,298,14,42,16
+    PUSHBUTTON      "浏览...",IDC_FILE_BROWSE,298,37,42,16
+    PUSHBUTTON      "生成(&M)",IDC_PACK,68,80,64,25,WS_DISABLED
+    PUSHBUTTON      "提取(&U)",IDC_UNPACK,214,80,64,25
+    CONTROL         "整图",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,60,32,10
+    CONTROL         "小图",IDC_CHECK5,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,44,60,32,10
+    CONTROL         "遮掩图",IDC_CHECK6,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,82,60,40,10
+    CONTROL         "行路图",IDC_CHECK7,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,129,60,40,10
+    CONTROL         "忽略已存在文件",IDC_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,177,60,72,10
+    LTEXT           "注：由于提取的TGA文件格式特殊，请使用Adobe PhotoShop查看和转换图片。",IDC_STATIC,7,114,333,11
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,3,0,0
+ PRODUCTVERSION 1,3,0,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080403a8"
+        BEGIN
+            VALUE "Comments", "支持梦幻西游、大话西游2(新格式地图)、大话西游3、大话西游外传"
+            VALUE "CompanyName", "DaliStudio.Net"
+            VALUE "FileDescription", "用于提取网易西游系列的MAP地图文件"
+            VALUE "FileVersion", "1.3.0.0"
+            VALUE "InternalName", "maptool.exe"
+            VALUE "LegalCopyright", "版权所有(C) 2010， 王大理。保留所有权利。"
+            VALUE "LegalTrademarks", "http://DaliStudio.net"
+            VALUE "OriginalFilename", "maptool.exe"
+            VALUE "ProductName", "MAP TOOL"
+            VALUE "ProductVersion", "1.3.0.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 936
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 178
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 133
+    END
+
+    IDD_MAPTOOL_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 340
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 142
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_ABOUTBOX            "关于MAP工具(&A)..."
+END
+
+#endif    // 中文(中华人民共和国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE 4, 2
+#pragma code_page(936)
+#include "res\maptool.rc2"  // 非 Microsoft Visual C++ 编辑的资源
+#include "afxres.rc"     // 标准组件
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

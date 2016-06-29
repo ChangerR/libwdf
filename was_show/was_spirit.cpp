@@ -2,6 +2,8 @@
 #include <stdio.h>
 #define WAS_FILE_TAG		(('P' << 8) + ('S'))	
 
+namespace dream {
+	
 const int TYPE_ALPHA = 0x00;// 前2位
 
 const int TYPE_ALPHA_PIXEL = 0x20;// 前3位 0010 0000
@@ -16,66 +18,71 @@ const int TYPE_REPEAT = 0x80;// 1000 0000
 
 const int TYPE_SKIP = 0xC0; // 1100 0000
 
-bool WasSpirit::init(unsigned char* data,int len)
+bool WasSpirit::init(unsigned char* data,size_t len)
 {
-	unsigned char* p = data;
+	Data d(data,len);
+	
 	bool ret = false;
 	unsigned int *palette = NULL;
 
 	do {
-		if(data == NULL || len <= sizeof(WasHead)) {
-			printf("error func call\n");
+		if(data == NULL) {
+			printf("null data detect\n");
 			break;
 		}
-		memcpy(&_wasHead,p,sizeof(WasHead));
+		
+		d.read((unsigned char*)&_wasHead,sizeof(WasHead));
+
 		if(_wasHead.tag != WAS_FILE_TAG) {
 			printf("this is not a was file\n");
 			break;
 		}
+		
 		if(4 + _wasHead.headersize > sizeof(WasHead)) {
 			_delayLine_len = _wasHead.headersize + 4 - sizeof(WasHead);
 			_delayLine = new unsigned char[_delayLine_len];
-			memcpy(_delayLine, data + sizeof(WasHead),_delayLine_len);
+			d.read(_delayLine,_delayLine_len);
 		}
 
-		p = data + _wasHead.headersize + 4;
+		d.seek(_wasHead.headersize + 4);
+
 		palette = new unsigned int[256];
 		for(int i = 0; i < 256;i++) {
-			unsigned short wColor = *(unsigned short*)p;
+			unsigned short wColor = d.read_ushort();
 			palette[i] = ((wColor & 0x001F) << 3) + ((wColor & 0x07E0) << 5) + ((wColor & 0xF800) << 8);
-			p += sizeof(unsigned short);
 		}
 
-		_frames = new Frame*[_wasHead.spritecount];
+        _frames = new Frame*[_wasHead.spiritcount];
 		
-		p = data + _wasHead.headersize + 4 + 512;
-
-		for(int i = 0;i < _wasHead.spritecount;i++) {
+		d.seek(_wasHead.headersize + 4 + 512);
+		
+        for(int i = 0;i < _wasHead.spiritcount;i++) {
 			_frames[i] = new Frame[_wasHead.framecount];
 			for(int n = 0; n < _wasHead.framecount;n++) {
 				if(_delayLine != NULL && n < _delayLine_len) {
 					_frames[i][n].delay = _delayLine[n];
 				}
-				_frames[i][n].addrOffset = *(int *)p;
-				p += sizeof(int);
+				_frames[i][n].addrOffset = d.read_int();
 			}
 		}
 
-		for(int i = 0;i < _wasHead.spritecount;i++) {
+        for(int i = 0;i < _wasHead.spiritcount;i++) {
 			for(int n = 0;n < _wasHead.framecount;n++) {
 				Frame* frame = &_frames[i][n];
 				int offset = frame->addrOffset;
+				
+				d.seek( _wasHead.headersize + 4 + offset);
 
-				p = data + _wasHead.headersize + 4 + offset;
-				frame->offX = *(int * )p;
-				frame->offY = *(int *)(p + 4);
-				frame->width = *(int *)(p + 8);
-				frame->height = *(int *)(p + 12);
+				frame->offX = d.read_int();
+				frame->offY = d.read_int();
+				frame->width = d.read_int();
+				frame->height = d.read_int();
 
 				frame->lineOffsets = new int[frame->height];
-				memcpy(frame->lineOffsets,p + 16,frame->height * 4);
+				
+				d.read((unsigned char*)frame->lineOffsets,frame->height * 4);
 
-				parse(frame,data,palette);
+				parse(frame,d,palette);
 			}
 		}
 
@@ -91,13 +98,12 @@ bool WasSpirit::init(unsigned char* data,int len)
 	return ret;
 }
 
-void WasSpirit::parse(Frame* frame,unsigned char* data,unsigned int* palette) {
-	unsigned char* p = data;
+void WasSpirit::parse(Frame* frame,Data& d,unsigned int* palette) {
+
 	int frameWidth = frame->width;
 	int frameHeight = frame->height;
-	unsigned int* dst = frame->data;
+	unsigned int* dst = NULL;
 	unsigned char flag;
-	unsigned char c_index;
 	unsigned char count;
 	unsigned int color;
 	unsigned int alpha;
@@ -106,18 +112,19 @@ void WasSpirit::parse(Frame* frame,unsigned char* data,unsigned int* palette) {
 	memset(frame->data,0,frameWidth * frameHeight * 4);
 	
 	for(int y = 0; y < frameHeight; y++) {
-		p = data + _wasHead.headersize + 4 + frame->lineOffsets[y];
+		
+		d.seek(_wasHead.headersize + 4 + frame->lineOffsets[y] + frame->addrOffset);
 		dst = frame->data + y * frameWidth;
+		
 		for(int x = 0; x < frameWidth;) {
-			flag = *p++;
+			flag = d.read_byte();
 
 			switch(flag & TYPE_FLAG) {
 				case TYPE_ALPHA:
 				{
 					if ((flag & TYPE_ALPHA_PIXEL) > 0) 
 					{
-						c_index = *p++;
-						color = palette[c_index];
+						color = palette[d.read_byte()];
 						alpha = flag & 0x1F;
 						dst[x] = color + (alpha << 27);
 						x++;
@@ -126,16 +133,17 @@ void WasSpirit::parse(Frame* frame,unsigned char* data,unsigned int* palette) {
 					{
 						// ???
 						count = flag & 0x1F;// count
-						alpha = *p++;// alpha
+						alpha = d.read_byte();// alpha
 						alpha = alpha & 0x1F;
-						c_index = *p++;
-						color = palette[c_index];
+						color = palette[d.read_byte()];
 						for (int i = 0; i < count; i++) 
 						{
 							dst[x] = color + (alpha << 27);
 							x++;
 						}
-					} 
+					} else {
+						x = frameWidth;
+					}
 				}
 
 				break;
@@ -145,8 +153,7 @@ void WasSpirit::parse(Frame* frame,unsigned char* data,unsigned int* palette) {
 						count = flag & 0x3F;
 						for (int i = 0; i < count; i++) 
 						{
-							c_index = *p++;
-                            color = palette[c_index];
+							color = palette[d.read_byte()];
 							alpha = 0x1F;
 							dst[x] = color + (alpha << 27);
 							x++;
@@ -157,8 +164,7 @@ void WasSpirit::parse(Frame* frame,unsigned char* data,unsigned int* palette) {
 				case TYPE_REPEAT:
 					{
 						count = flag & 0x3F;
-						c_index = *p++;
-						color = palette[c_index];
+						color = palette[d.read_byte()];
 						alpha = 0x1F;
 						for (int i = 0; i < count; i++) 
 						{
@@ -183,8 +189,10 @@ void WasSpirit::debug() {
 	printf("Debug spirit info:\n");
 	printf("spirit width:%d\n",_wasHead.width);
 	printf("spirit height:%d\n",_wasHead.height);
-	printf("spirit count:%d\n",_wasHead.spritecount);
+    printf("spirit count:%d\n",_wasHead.spiritcount);
 	printf("spirit frame count:%d\n",_wasHead.framecount);
 	printf("spirit centerx:%d\n",_wasHead.centerX);
 	printf("spirit centery:%d\n",_wasHead.centerY);
 }
+
+};

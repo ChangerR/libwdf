@@ -1,7 +1,7 @@
 #include "frame_item.h"
 #include <qpainter.h>
 
-Frame_item::Frame_item(QSharedPointer<WasSpirit> &spirit)
+Frame_item::Frame_item(QSharedPointer<dream::WasSpirit> &spirit)
 {
     _spirit = spirit;
     setFlag(QGraphicsItem::ItemIsMovable);
@@ -21,13 +21,13 @@ bool Frame_item::init(int spirit_index)
 {
     bool ret = false;
     do {
-        if(_spirit == NULL && spirit_index < _spirit->_wasHead.spritecount)
+        if(_spirit == NULL && spirit_index < _spirit->get_spirit_count())
             break;
 
-        for(int i = 0;i < _spirit->_wasHead.framecount;i++) {
-            QImage* image = new QImage((unsigned char*)_spirit->_frames[spirit_index][i].data,
-                                       _spirit->_frames[spirit_index][i].width,
-                                       _spirit->_frames[spirit_index][i].height,
+        for(int i = 0;i < _spirit->get_frame_count();i++) {
+            QImage* image = new QImage((unsigned char*)(_spirit->get_frame(spirit_index,i)->data),
+                                       _spirit->get_frame(spirit_index,i)->width,
+                                       _spirit->get_frame(spirit_index,i)->height,
                                        QImage::Format_ARGB32);
            _queue.enqueue(image);
         }
@@ -46,17 +46,21 @@ void Frame_item::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
 {
     Q_UNUSED(option);
     Q_UNUSED(widget);
-    painter->fillRect(this->boundingRect(),Qt::blue);
+    painter->fillRect(this->boundingRect(),Qt::transparent);
+
     if(!_queue.empty()) {
         QImage* image = _queue.dequeue();
         _queue.enqueue(image);
 
         painter->drawImage(boundingRect().topLeft(),*image);
     }
+
 }
 
 QRectF Frame_item::boundingRect() const
 {
-    return QRectF(-_spirit->_wasHead.width / 2,-_spirit->_wasHead.height / 2,
-                  _spirit->_wasHead.width / 2 ,_spirit->_wasHead.height / 2);
+    qreal adjust=0.5;
+
+    return QRectF(-_spirit->get_width() / 2 - adjust,-_spirit->get_height() / 2 - adjust,
+                  _spirit->get_width() + adjust,_spirit->get_height() + adjust);
 }

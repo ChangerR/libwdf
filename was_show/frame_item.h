@@ -10,7 +10,7 @@ class Frame_item:public QObject,public QGraphicsItem
 {
     Q_OBJECT
 public:
-    Frame_item(QSharedPointer<WasSpirit>& spirit);
+    Frame_item(QSharedPointer<dream::WasSpirit>& spirit);
 
     virtual ~Frame_item();
 
@@ -22,7 +22,7 @@ public:
 
     QRectF boundingRect() const;
 private:
-    QSharedPointer<WasSpirit> _spirit;
+    QSharedPointer<dream::WasSpirit> _spirit;
     QQueue<QImage*> _queue;
 };
 

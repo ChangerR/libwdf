@@ -18,6 +18,16 @@ MainWindow::MainWindow(QWidget *parent) :
     QGraphicsScene* scene = new QGraphicsScene(ui->graphicsView);
     scene->setSceneRect(-ui->graphicsView->rect().width() / 2,-ui->graphicsView->rect().height() / 2,
                         ui->graphicsView->rect().width(),ui->graphicsView->height());
+
+    QPixmap pixmap(80,80);
+    pixmap.fill(Qt::transparent);
+    QPainter painter(&pixmap);
+
+    painter.fillRect(QRectF(40,0,40,40),QBrush(QColor(222,222,222)));
+    painter.fillRect(QRectF(0,40,40,40),QBrush(QColor(222,222,222)));
+
+    scene->setBackgroundBrush(pixmap);
+
     ui->graphicsView->setScene(scene);
     ui->graphicsView->centerOn(0,0);
     connect(ui->actionOpen,SIGNAL(triggered(bool)),this,SLOT(onFileOpen()));
@@ -47,7 +57,7 @@ void MainWindow::onFileOpen()
             QFile file(filename);
             if(file.open(QIODevice::ReadOnly) != 0) {
                 QByteArray data =  file.readAll();
-                QSharedPointer<WasSpirit> was(WasSpirit::createSpirit((unsigned char*)data.data(),data.size()));
+                QSharedPointer<dream::WasSpirit> was(dream::WasSpirit::createSpirit((unsigned char*)data.data(),data.size()));
                 Frame_item* item = new Frame_item(was);
                 if(item->init(0) != false) {
                     ui->graphicsView->scene()->addItem(item);

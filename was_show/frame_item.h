@@ -5,7 +5,7 @@
 #include <qgraphicsitem.h>
 #include "was_spirit.h"
 #include <qqueue.h>
-
+#include <QVector>
 class Frame_item:public QObject,public QGraphicsItem
 {
     Q_OBJECT
@@ -14,7 +14,7 @@ public:
 
     virtual ~Frame_item();
 
-    bool init(int);
+    bool init();
 
     void timerEvent(QTimerEvent *event);
 
@@ -23,7 +23,7 @@ public:
     QRectF boundingRect() const;
 private:
     QSharedPointer<dream::WasSpirit> _spirit;
-    QQueue<QImage*> _queue;
+    QVector< QQueue<QImage*> > _queues;
 };
 
 #endif // FRAME_ITEM_H

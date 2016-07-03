@@ -2,7 +2,7 @@
 #define __CPPUTILS_WASFILE
 #include <string.h>
 #include <assert.h>
-
+#define WAS_FILE_TAG		(('P' << 8) + ('S'))
 namespace dream {
 	
 class Data {

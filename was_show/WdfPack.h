@@ -61,7 +61,7 @@ public:
 		return _buffer;
 	}
 private:
-	WdfPack():_list(NULL),_file(NULL),_alloc_size(0),_buffer(NULL),_pointer(0){};
+    WdfPack():_list(NULL),_file(NULL),_buffer(NULL),_alloc_size(0),_pointer(0){}
 	
 	bool init(const char* file) {
 		bool ret = false;

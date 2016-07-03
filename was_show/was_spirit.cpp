@@ -1,6 +1,6 @@
 #include "was_spirit.h"
 #include <stdio.h>
-#define WAS_FILE_TAG		(('P' << 8) + ('S'))	
+
 
 namespace dream {
 	

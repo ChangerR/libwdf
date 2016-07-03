@@ -19,6 +19,7 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwindow.h \
     was_spirit.h \
-    frame_item.h
+    frame_item.h \
+    WdfPack.h
 
 FORMS    += mainwindow.ui

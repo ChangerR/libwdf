@@ -71,6 +71,16 @@ bool WasSpirit::init(unsigned char* data,size_t len)
 				Frame* frame = &_frames[i][n];
 				int offset = frame->addrOffset;
 				
+                if(offset <= 0) {
+                    frame->offX = 0;
+                    frame->offY = 0;
+                    frame->width = 0;
+                    frame->height = 0;
+                    frame->lineOffsets = NULL;
+                    frame->data = NULL;
+                    continue;
+                }
+
 				d.seek( _wasHead.headersize + 4 + offset);
 
 				frame->offX = d.read_int();
@@ -78,6 +88,9 @@ bool WasSpirit::init(unsigned char* data,size_t len)
 				frame->width = d.read_int();
 				frame->height = d.read_int();
 
+                if(frame->height > 1000) {
+                    return false;
+                }
 				frame->lineOffsets = new int[frame->height];
 				
 				d.read((unsigned char*)frame->lineOffsets,frame->height * 4);

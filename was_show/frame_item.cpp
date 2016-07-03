@@ -14,7 +14,8 @@ Frame_item::~Frame_item()
     for(auto iter = _queues.begin();iter != _queues.end();++iter) {
         while(iter->empty() == false) {
             QImage* img = iter->dequeue();
-            delete img;
+            if(img)
+                delete img;
         }
     }
 }
@@ -30,10 +31,12 @@ bool Frame_item::init()
             QQueue<QImage*> queue;
 
             for(int i = 0;i < _spirit->get_frame_count();i++) {
-                QImage* image = new QImage((unsigned char*)(_spirit->get_frame(spirit_index,i)->data),
-                                           _spirit->get_frame(spirit_index,i)->width,
-                                           _spirit->get_frame(spirit_index,i)->height,
-                                           QImage::Format_ARGB32);
+                QImage* image = NULL;
+                if(_spirit->get_frame(spirit_index,i)->data)
+                    image = new QImage((unsigned char*)(_spirit->get_frame(spirit_index,i)->data),
+                                               _spirit->get_frame(spirit_index,i)->width,
+                                               _spirit->get_frame(spirit_index,i)->height,
+                                               QImage::Format_ARGB32);
                queue.enqueue(image);
             }
 
@@ -61,11 +64,14 @@ void Frame_item::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
         QImage* img = _queues[0].dequeue();
         _queues[0].enqueue(img);
 
-        painter->drawImage(boundingRect().topLeft(),*img);
+        if(img)
+            painter->drawImage(boundingRect().topLeft(),*img);
     } else {
         for(int i = 0;i < _queues.size();i++) {
             QImage* img = _queues[i].dequeue();
             _queues[i].enqueue(img);
+            if(img == NULL)
+                continue;
 
             switch (i) {
             case 0:
